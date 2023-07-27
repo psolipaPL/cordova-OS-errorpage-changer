@@ -3,8 +3,8 @@ const fs = require('fs');
 //Initial configs
 const configs = {
     textToReplace: 'There was an error processing your request.',
-    androidPath: context.opts.projectRoot + "/platforms/android/app/src/main/assets/www/",
-    iosPath: context.opts.projectRoot + "/platforms/ios/www/",
+    androidPath: "/platforms/android/app/src/main/assets/www/",
+    iosPath: "/platforms/ios/www/",
     errorFile1: '_error.html',
     errorFile2: 'error.html'
 };
