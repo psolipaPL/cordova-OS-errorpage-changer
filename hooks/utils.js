@@ -1,0 +1,29 @@
+const fs = require('fs');
+
+//Initial configs
+const configs = {
+    textToReplace: 'There was an error processing your request.',
+    androidPath: context.opts.projectRoot + "/platforms/android/app/src/main/assets/www/",
+    iosPath: context.opts.projectRoot + "/platforms/ios/www/",
+    errorFile1: '_error.html',
+    errorFile2: 'error.html'
+};
+
+function getConfigs() {
+    return configs;
+}
+
+function readErrorFile(path) {
+    return fs.readFileSync(path, "utf-8");
+}
+
+function errorFileReplacer(path, content, textToReplace, replacementText) {
+    content = content.replace(textToReplace, replacementText);
+    fs.writeFileSync(path, content, "utf-8");
+}
+
+module.exports = {
+    getConfigs,
+    readErrorFile,
+    errorFileReplacer
+}
