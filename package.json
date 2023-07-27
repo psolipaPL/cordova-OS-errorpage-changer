@@ -1,0 +1,19 @@
+{
+  "name": "cordova-os-errorpage-changer",
+  "version": "1.0.0",
+  "description": "Cordova Plugin to change default OutSystems Mobile error screen html",
+  "keywords": [
+    "ecosystem:cordova",
+    "cordova-android",
+    "cordova-ios"
+  ],
+  "cordova": {
+    "id": "cordova-os-errorpage-changer",
+    "platforms": [
+      "android",
+      "ios"
+    ]
+  },
+  "author": "Paulo Solipa",
+  "license": "ISC"
+}
