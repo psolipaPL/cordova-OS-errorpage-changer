@@ -57,6 +57,7 @@ module.exports = function (context) {
             </div>
         </div>
     </div>
+    ....script tag related with OS. src may vary from app to app
     <script type="text/javascript" src="scripts/<EndUserModule>.error.js?DBHuO6wnmDqEWkFMr3_N1w"></script>
 </body>
 </html> 
