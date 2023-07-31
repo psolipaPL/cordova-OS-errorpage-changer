@@ -65,8 +65,7 @@ module.exports = function (context) {
 
   const confs = utils.getConfigs();
 
-  let errorFileContent1 = utils.readErrorFile(context.opts.projectRoot + confs.iosPath + confs.errorFile1);
-
-  utils.errorFileReplacer(context.opts.projectRoot + confs.iosPath + confs.errorFile1, errorFileContent1, 'There was an error processing your request.', '');
+  let errorFileContent = utils.readErrorFile(context.opts.projectRoot + confs.iosPath + confs.errorFile);
+  utils.errorFileReplacer(context.opts.projectRoot + confs.iosPath + confs.errorFile, errorFileContent, 'There was an error processing your request.', '');
 
 }

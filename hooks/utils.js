@@ -5,7 +5,7 @@ const configs = {
     textToReplace: 'There was an error processing your request.',
     androidPath: "/platforms/android/app/src/main/assets/www/",
     iosPath: "/platforms/ios/www/",
-    errorFile1: '_error.html'
+    errorFile: '_error.html'
 };
 
 function getConfigs() {
