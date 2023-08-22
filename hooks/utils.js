@@ -23,7 +23,7 @@ function errorFileReplacer(path, content, textToReplace, replacementText) {
 
 function indexReplacer(path, content) {
     //content = content.substr(0, content.indexOf('<script type="text/javascript" src="scripts/Debugger.js')) + content.substr(content.indexOf('</script>', content.indexOf('<script type="text/javascript" src="scripts/Debugger.js')) + 9)
-    content = content.replace("<script", "<script async");
+    content = content.replace("/<script/g", "<script async");
     fs.writeFileSync(path, content, "utf-8");
 }
 
