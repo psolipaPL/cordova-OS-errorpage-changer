@@ -10,7 +10,7 @@ module.exports = function (context) {
     utils.indexJSChanger(context.opts.projectRoot + confs.androidPath + "scripts/ECOP_Mobile_PS.index.js");
 
 
-
+/*
 
     var fs = require('fs'),
         path = require('path'),
@@ -238,6 +238,6 @@ module.exports = function (context) {
         processFiles(path.join(platformPath, folder));
     });
 
-    checkIfFinished();
+    checkIfFinished();*/
 
 }
