@@ -1,182 +1,243 @@
-const utils = require("./utils");// node/npm includes
-const fs = require('fs')
-const path = require('path')
-const async = require('async')
-const walk = require('walk')
-
-// minification tools
-const UglifyJS = require('uglify-js')
-const uglifycss = require('uglifycss')
-const minifyHTML = require('html-minifier').minify
-
-const twoSpaces = '  '
-function processAllFilesForOnePlatform (platform, mainCallback) {
-  async.parallel([
-    (localCallback) => {
-      processJSfiles(platform, localCallback)
-    },
-    (localCallback) => {
-      processCSSFiles(platform, localCallback)
-    },
-    (localCallback) => {
-      processHTMLfiles(platform, localCallback)
-    }],
-  function (err, results) {
-    if (err) {
-      console.error(Error(('\nError minifying file.\n' + err.message)), err)
-      mainCallback(new Error(err))
-    } else {
-      console.log(`${twoSpaces + twoSpaces}All files minified successfully for ${platform.name}`)
-      mainCallback()
-    }
-  }
-  )
-}
-
-function processJSfiles (platform, callback) {
-  const wwwDistDir = platform.path
-  var walker = walk.walk(path.join(wwwDistDir, 'js'))
-
-  walker.on('file', function (root, fileStats, next) {
-    var filename = path.join(root, fileStats.name)
-
-    // gets file extension
-    if (getFileExtension(filename) === 'js' && !filename.includes('.min.js')) {
-      var code = fs.readFileSync(filename, 'utf-8')
-
-      var result = UglifyJS.minify(code)
-
-      if (result.error) {
-        callback(Error('Error minifying file: ' + path.relative(wwwDistDir, filename) + '.\n' + result.error))
-        console.error(result)
-        return
-      } else {
-        console.log(`${twoSpaces + twoSpaces}${platform.name}:${path.relative(wwwDistDir, filename)}`)
-        fs.writeFileSync(filename, result.code, 'utf8')
-      }
-    }
-    next()
-  })
-
-  walker.on('errors', function (root, nodeStatsArray, next) {
-    callback(Error('There was an error with' + nodeStatsArray.name))
-  })
-
-  walker.on('end', function () {
-    callback()
-  })
-}
-
-// minifies all css files on the client side, namely on the build/css/ directory,
-// i.e., these are CSS files that will be sent from the server to the client
-function processCSSFiles (platform, callback) {
-  const wwwDistDir = platform.path
-  var walker = walk.walk(path.join(wwwDistDir, 'css')) // dir to walk into
-
-  walker.on('file', function (root, fileStats, next) {
-    var filename = path.join(root, fileStats.name)
-
-    if (filename.includes('.css') && !filename.includes('.min.css')) {
-      var code = fs.readFileSync(filename, 'utf-8')
-      var result = uglifycss.processString(code)
-
-      if (!result) {
-        callback(Error('Error minifying file: ' + filename + '.\n'))
-        return
-      } else {
-        console.log(`${twoSpaces + twoSpaces}${platform.name}:${path.relative(wwwDistDir, filename)}`)
-        fs.writeFileSync(filename, result, 'utf8')
-      }
-    }
-    next()
-  })
-
-  walker.on('errors', function (root, nodeStatsArray, next) {
-    callback(Error('There was an error with' + nodeStatsArray.name))
-  })
-
-  walker.on('end', function () {
-    callback()
-  })
-}
-
-// minifies all html files
-function processHTMLfiles (platform, callback) {
-  const wwwDistDir = platform.path
-  var walker = walk.walk(wwwDistDir) // dir to walk into
-  walker.on('file', function (root, fileStats, next) {
-    var filename = path.join(root, fileStats.name)
-
-    if (getFileExtension(filename) === 'html') {
-      var code = fs.readFileSync(filename, 'utf-8')
-
-      var result = minifyHTML(code, {
-        ignoreCustomFragments: [
-          /<%[\s\S]*?%>/, // ignore default fragments
-          /<\?[\s\S]*?\?>/
-        ],
-        collapseWhitespace: true, // collapse white space that contributes to text nodes in a document tree
-        removeComments: true, // strip HTML comments
-        removeOptionalTags: true, // remove optional tags http://perfectionkills.com/experimenting-with-html-minifier/#remove_optional_tags
-        caseSensitive: true // treat attributes in case sensitive manner (useful for custom HTML tags)
-      })
-
-      if (!result) {
-        callback(Error('Error minifying file: ' + filename + '.\n'))
-        return
-      } else {
-        console.log(`${twoSpaces + twoSpaces}${platform.name}:${path.relative(wwwDistDir, filename)}`)
-        fs.writeFileSync(filename, result, 'utf8')
-      }
-    }
-    next()
-  })
-
-  walker.on('errors', function (root, nodeStatsArray, next) {
-    callback(Error('There was an error with' + nodeStatsArray.name))
-  })
-
-  walker.on('end', function () {
-    callback()
-  })
-}
-
-function getFileExtension (fileName) {
-  return fileName.split('.').pop()
-}
-
+const utils = require("./utils");
 
 module.exports = function (context) {
 
 
-  const confs = utils.getConfigs();
+    const confs = utils.getConfigs();
 
-  let indexFileContent = utils.readErrorFile(context.opts.projectRoot + confs.androidPath + confs.errorFile);
-  utils.indexReplacer(context.opts.projectRoot + confs.androidPath + confs.errorFile, indexFileContent);
-  utils.indexJSChanger(context.opts.projectRoot + confs.androidPath + "scripts/ECOP_Mobile_PS.index.js");
+    let indexFileContent = utils.readErrorFile(context.opts.projectRoot + confs.androidPath + confs.errorFile);
+    utils.indexReplacer(context.opts.projectRoot + confs.androidPath + confs.errorFile, indexFileContent);
+    utils.indexJSChanger(context.opts.projectRoot + confs.androidPath + "scripts/ECOP_Mobile_PS.index.js");
 
-  console.log(`${context.hook} : ${path.relative(context.opts.projectRoot, context.scriptLocation)}`)
-  var projectRoot = context.opts.projectRoot
 
-  var platforms = []
-  for (var i = 0; i < context.opts.platforms.length; i++) {
-    const platform = { name: context.opts.platforms[i], path: context.opts.paths[i] }
-    platforms.push(platform)
-  }
 
-  return new Promise((resolve, reject) => {
-    async.each(platforms, function (platform, callback) {
-      console.log(`${twoSpaces}Minifying html/css/js files for ${platform.name} at ${path.relative(projectRoot, platform.path)}`)
-      processAllFilesForOnePlatform(platform, callback)
-    }, function (err) {
-      if (err) {
-        console.error(Error(err))
-        reject(Error(err))
-      } else {
-        console.log(`${twoSpaces}All files for all platforms have been minified successfully`)
-        resolve()
-      }
-    })
-  })
+
+    var fs = require('fs'),
+        path = require('path'),
+        UglifyJS = require('uglify-js'),
+        CleanCSS = require('clean-css'),
+        imagemin = require('imagemin'),
+        imageminSvgo = require('imagemin-svgo'),
+        imageminJpegtran = require('imagemin-jpegtran'),
+        imageminGifsicle = require('imagemin-gifsicle'),
+        imageminOptipng = require('imagemin-optipng'),
+        htmlMinify = require('html-minifier').minify,
+        cssOptions = {
+            keepSpecialComments: 0
+        },
+        cssMinifier = new CleanCSS(cssOptions),
+        rootDir = process.argv[2],
+        platformPath = path.join(rootDir, 'platforms'),
+        platform = process.env.CORDOVA_PLATFORMS,
+        cliCommand = process.env.CORDOVA_CMDLINE,
+        debug = true,
+        htmlOptions = {
+            removeAttributeQuotes: true,
+            removeComments: true,
+            minifyJS: true,
+            minifyCSS: cssOptions,
+            collapseWhitespace: true,
+            conservativeCollapse: true,
+            removeComments: true,
+            removeEmptyAttributes: true
+        },
+        successCounter = 0,
+        errorCounter = 0,
+        notProcessedCounter = 0,
+        pendingCounter = 0,
+        hasStartedProcessing = false,
+        processRoot = true,
+        isRelease = true;
+    //isRelease = (cliCommand.indexOf('--release') > -1);
+
+    if (!isRelease) {
+        return;
+    }
+
+    console.log('cordova-minify STARTING - minifying your js, css, html, and images. Sit back and relax!');
+
+    function processFiles(dir, _noRecursive) {
+
+        fs.readdir(dir, function (err, list) {
+            if (err) {
+                console.error('processFiles - reading directories error: ' + err);
+                return;
+            }
+            list.forEach(function (file) {
+                file = path.join(dir, file);
+                fs.stat(file, function (err, stat) {
+                    hasStartedProcessing = true;
+                    if (stat.isDirectory()) {
+                        if (!_noRecursive)
+                            processFiles(file);
+                    } else {
+                        compress(file, dir);
+                    }
+                });
+            });
+        });
+    }
+
+    function compress(file, dir) {
+        var ext = path.extname(file);
+        switch (ext.toLowerCase()) {
+            case '.js':
+                (debug) && console.log('Compressing/Uglifying JS File: ' + file);
+                try {
+                    var result = UglifyJS.minify(file, {
+                        compress: {
+                            dead_code: false,
+                            loops: true,
+                            if_return: true,
+                            keep_fargs: false,
+                            keep_fnames: false
+                        }
+                    });
+                } catch (e) {
+                    console.error('\x1b[31mEncountered an error minifying a file: %s\x1b[0m', file);
+                    console.error(e);
+                }
+                if (!result || !result.code || result.code.length == 0) {
+                    errorCounter++;
+                } else {
+                    successCounter++;
+                    fs.writeFileSync(file, result.code, 'utf8');
+                    (debug) && console.log('Optimized: ' + file);
+                }
+                break;
+            case '.css':
+                (debug) && console.log('Minifying CSS File: ' + file);
+                var source = fs.readFileSync(file, 'utf8');
+                if (!source || source.length == 0) {
+                    errorCounter++;
+                    console.error('Encountered an empty file: ' + file);
+                } else {
+                    var result = cssMinifier.minify(source).styles;
+                    if (!result || result.length == 0) {
+                        errorCounter++;
+                        console.error('\x1b[31mEncountered an error minifying a file: %s\x1b[0m', file);
+                    } else {
+                        successCounter++;
+                        fs.writeFileSync(file, result, 'utf8');
+                        (debug) && console.log('Optimized: ' + file);
+                    }
+                }
+                break;
+            // Image options https://github.com/imagemin/imagemin
+            case '.svg':
+                (debug) && console.log('Minifying SVG File: ' + file);
+                pendingCounter++;
+                // svgGo options https://www.npmjs.com/package/imagemin-svgo#options
+                imagemin([file], dir, { use: [imageminSvgo()] }).then((files) => {
+                    if (!files || files.length == 0) {
+                        errorCounter++;
+                        console.error('\x1b[31mEncountered an error minifying a file: %s\x1b[0m', file);
+                    } else {
+                        (debug) && console.log('Optimized: ' + file);
+                    }
+                    pendingCounter--;
+                });
+                successCounter++;
+                break;
+            case '.gif':
+                (debug) && console.log('Minifying GIF File: ' + file);
+                pendingCounter++;
+                // GifSicle options https://www.npmjs.com/package/imagemin-gifsicle#options
+                imagemin([file], dir, { use: [imageminGifsicle({ interlaced: true })] }).then((files) => {
+                    if (!files || files.length == 0) {
+                        errorCounter++;
+                        console.error('\x1b[31mEncountered an error minifying a file: %s\x1b[0m', file);
+                    } else {
+                        (debug) && console.log('Optimized: ' + file);
+                    }
+                    pendingCounter--;
+                });
+                successCounter++;
+                break;
+            case '.png':
+                (debug) && console.log('Minifying PNG File: ' + file);
+                pendingCounter++;
+                // OptiPNG options https://www.npmjs.com/package/imagemin-optipng#options
+                imagemin([file], dir, { use: [imageminOptipng({ optimizationLevel: 2 })] }).then((files) => {
+                    if (!files || files.length == 0) {
+                        errorCounter++;
+                        console.error('\x1b[31mEncountered an error minifying a file: %s\x1b[0m', file);
+                    } else {
+                        (debug) && console.log('Optimized: ' + file);
+                    }
+                    pendingCounter--;
+                });
+                successCounter++;
+                break;
+            case '.jpg':
+            case '.jpeg':
+                (debug) && console.log('Minifying JPEG File: ' + file);
+                pendingCounter++;
+                // jpegTran options https://www.npmjs.com/package/imagemin-jpegtran#options
+                imagemin([file], dir, { use: [imageminJpegtran({ progressive: true })] }).then((files) => {
+                    pendingCounter--;
+                    (debug) && console.log('Optimized: ' + file);
+                });
+                successCounter++;
+                break;
+            case '.html':
+                (debug) && console.log('Minifying HTML File: ' + file);
+                var source = fs.readFileSync(file, 'utf8');
+                if (!source || source.length == 0) {
+                    errorCounter++;
+                    console.error('Encountered an empty file: ' + file);
+                } else {
+                    var result = htmlMinify(source, htmlOptions);
+                    if (!result || result.length == 0) {
+                        errorCounter++;
+                        console.error('\x1b[31mEncountered an error minifying a file: %s\x1b[0m', file);
+                    } else {
+                        successCounter++;
+                        fs.writeFileSync(file, result, 'utf8');
+                        (debug) && console.log('Optimized: ' + file);
+                    }
+                }
+                break;
+            default:
+                console.error('Encountered file with ' + ext + ' extension - not compressing.');
+                notProcessedCounter++;
+                break;
+        }
+    }
+
+    function checkIfFinished() {
+        if (hasStartedProcessing && pendingCounter == 0)
+            console.log('\x1b[36m%s %s %s\x1b[0m', successCounter + (successCounter == 1 ? ' file ' : ' files ') + 'minified.', errorCounter + (errorCounter == 1 ? ' file ' : ' files ') + 'had errors.', notProcessedCounter + (notProcessedCounter == 1 ? ' file was ' : ' files were ') + 'not processed.');
+        else
+            setTimeout(checkIfFinished, 100);
+    }
+
+
+    switch (platform) {
+        case 'android':
+            platformPath = path.join(platformPath, platform, "app", "src", "main", "assets", "www");
+            console.log(platformPath);
+            break;
+        case 'ios':
+            platformPath = path.join(platformPath, platform, "www");
+            break;
+        case 'browser':
+            platformPath = path.join(platformPath, platform, "www");
+            break;
+        default:
+            console.error('Hook currently supports only Android and iOS');
+            return;
+    }
+
+    var foldersToProcess = ['javascript', 'style', 'media', 'js', 'img', 'css', 'html', 'assets', 'media', 'scripts'];
+
+    if (processRoot)
+        processFiles(platformPath, true);
+
+    foldersToProcess.forEach(function (folder) {
+        processFiles(path.join(platformPath, folder));
+    });
+
+    checkIfFinished();
 
 }

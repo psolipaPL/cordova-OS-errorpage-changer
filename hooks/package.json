@@ -1,9 +1,13 @@
 {
     "dependencies": {
-        "async": "3.2.4",
-        "walk": "2.3.15",
         "uglify-js": "3.17.4",
-        "uglifycss": "0.0.29",
+        "clean-css": "0.0.29",
+        "imagemin": "4.0.0",
+        "imagemin-svgo": "10.0.1",
+        "imagemin-jpegtran": "7.0.0",
+        "imagemin-gifsicle": "7.0.0",
+        "imagemin-optipng": "8.0.0",
         "html-minifier": "4.0.0"
+
     }
 }
