@@ -1,7 +1,7 @@
 {
     "dependencies": {
         "uglify-js": "3.17.4",
-        "clean-css": "0.0.29",
+        "clean-css": "5.3.2",
         "imagemin": "4.0.0",
         "imagemin-svgo": "10.0.1",
         "imagemin-jpegtran": "7.0.0",
