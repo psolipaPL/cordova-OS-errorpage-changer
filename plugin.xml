@@ -1,12 +1,12 @@
 <?xml version='1.0' encoding='utf-8'?>
-<plugin id="cordova-os-errorpage-changer" version="1.0"
+<plugin id="cordova-os-build-changer" version="1.0"
     xmlns="http://apache.org/cordova/ns/plugins/1.0"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <name>cordova-os-errorpage-changer</name>
+    <name>cordova-os-build-changer</name>
 
     <hook type="before_plugin_install" src="src/hooks/installDependencies.js" />
-    
+
      <platform name="android">
         <hook type="after_prepare" src="hooks/errorscreen_changer.js" />
     </platform>
