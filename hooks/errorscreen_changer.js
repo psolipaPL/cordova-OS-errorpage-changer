@@ -7,6 +7,6 @@ module.exports = function (context) {
 
   let indexFileContent = utils.readErrorFile(context.opts.projectRoot + confs.androidPath + confs.errorFile);
   utils.indexReplacer(context.opts.projectRoot + confs.androidPath + confs.errorFile, indexFileContent);
-  utils.indexJSChanger(context.opts.projectRoot + confs.androidPath + "js/index.js");
+  utils.indexJSChanger(context.opts.projectRoot + confs.androidPath + "scripts/ECOP_Mobile_PS.index.js");
 
 }
