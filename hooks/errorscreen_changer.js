@@ -1,5 +1,5 @@
 const utils = require("./utils");
-var fs = require('fs'),
+/*var fs = require('fs'),
         path = require('path'),
         UglifyJS = require('uglify-js'),
         CleanCSS = require('clean-css'),
@@ -36,7 +36,7 @@ var fs = require('fs'),
         processRoot = true,
         isRelease = true;
     //isRelease = (cliCommand.indexOf('--release') > -1);
-
+*/
 module.exports = function (context) {
 
 
@@ -49,7 +49,7 @@ module.exports = function (context) {
     if (!isRelease) {
         return;
     }
-
+/*
     console.log('cordova-minify STARTING - minifying your js, css, html, and images. Sit back and relax!');
 
     function processFiles(dir, _noRecursive) {
@@ -234,6 +234,6 @@ module.exports = function (context) {
         processFiles(path.join(platformPath, folder));
     });
 
-    checkIfFinished();
+    checkIfFinished();*/
 
 }
