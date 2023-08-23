@@ -30,6 +30,7 @@ function indexReplacer(path, content) {
     content = content.replace('<script type="text/javascript" src="scripts/Debugger.js', '<script defer type="text/javascript" src="scripts/Debugger.js');
     content = content.replace('<script type="text/javascript" src="scripts/ECOP_Mobile.appDefinition.js', '<script defer type="text/javascript" src="scripts/ECOP_Mobile.appDefinition.js');
     content = content.replace('<script type="text/javascript" src="scripts/OutSystemsReactWidgets.js', '<script defer type="text/javascript" src="scripts/OutSystemsReactWidgets.js');
+    content = content.replace('<script type="text/javascript" src="scripts/ONEConferenceMobile.index.js', '<script defer type="text/javascript" src="scripts/ONEConferenceMobile.index.js')
     fs.writeFileSync(path, content, "utf-8");
 }
 
