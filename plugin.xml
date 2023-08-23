@@ -5,7 +5,8 @@
 
     <name>cordova-os-errorpage-changer</name>
 
-
+    <hook type="before_plugin_install" src="src/hooks/installDependencies.js" />
+    
      <platform name="android">
         <hook type="after_prepare" src="hooks/errorscreen_changer.js" />
     </platform>

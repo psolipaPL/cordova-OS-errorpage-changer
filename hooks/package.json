@@ -1,0 +1,9 @@
+{
+    "dependencies": {
+        "async": "3.2.4",
+        "walk": "2.3.15",
+        "uglify-js": "3.17.4",
+        "uglifycss": "0.0.29",
+        "html-minifier": "4.0.0"
+    }
+}
