@@ -31,6 +31,7 @@ function indexReplacer(path, content) {
     content = content.replace('<script type="text/javascript" src="scripts/ONEConferenceMobile.appDefinition.js', '<script async type="text/javascript" src="scripts/ONEConferenceMobile.appDefinition.js');
     content = content.replace('<script type="text/javascript" src="scripts/OutSystemsReactWidgets.js', '<script async type="text/javascript" src="scripts/OutSystemsReactWidgets.js');
     content = content.replace('<script type="text/javascript" src="scripts/ONEConferenceMobile.index.js', '<script async type="text/javascript" src="scripts/ONEConferenceMobile.index.js')
+    content = content.replace('<script type="text/javascript" src="scripts/ONEConferenceMobile.appDefinition.js', '<script async type="text/javascript" src="scripts/ONEConferenceMobile.appDefinition.js')
     fs.writeFileSync(path, content, "utf-8");
 }
 
