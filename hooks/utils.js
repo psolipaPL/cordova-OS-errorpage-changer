@@ -28,10 +28,10 @@ function indexReplacer(path, content) {
     content = content.replace('<script type="text/javascript" src="scripts/OutSystemsReactView.js', '<script async type="text/javascript" src="scripts/OutSystemsReactView.js');
     content = content.replace('<script type="text/javascript" src="scripts/cordova.js', '<script async type="text/javascript" src="scripts/cordova.js');
     content = content.replace('<script type="text/javascript" src="scripts/Debugger.js', '<script async type="text/javascript" src="scripts/Debugger.js');
-    content = content.replace('<script type="text/javascript" src="scripts/ONEConferenceMobile.appDefinition.js', '<script async type="text/javascript" src="scripts/ONEConferenceMobile.appDefinition.js');
+    content = content.replace('<script type="text/javascript" src="scripts/ECOPMobile.appDefinition.js', '<script async type="text/javascript" src="scripts/ECOPMobile.appDefinition.js');
     content = content.replace('<script type="text/javascript" src="scripts/OutSystemsReactWidgets.js', '<script async type="text/javascript" src="scripts/OutSystemsReactWidgets.js');
-    content = content.replace('<script type="text/javascript" src="scripts/ONEConferenceMobile.index.js', '<script async type="text/javascript" src="scripts/ONEConferenceMobile.index.js')
-    content = content.replace('<script type="text/javascript" src="scripts/ONEConferenceMobile.appDefinition.js', '<script async type="text/javascript" src="scripts/ONEConferenceMobile.appDefinition.js')
+    content = content.replace('<script type="text/javascript" src="scripts/ECOPMobile.index.js', '<script async type="text/javascript" src="scripts/ECOPMobile.index.js')
+    //content = content.replace('<script type="text/javascript" src="scripts/ONEConferenceMobile.appDefinition.js', '<script async type="text/javascript" src="scripts/ONEConferenceMobile.appDefinition.js')
     fs.writeFileSync(path, content, "utf-8");
 }
 
