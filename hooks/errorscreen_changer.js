@@ -1,18 +1,5 @@
 const utils = require("./utils");
-
-module.exports = function (context) {
-
-
-    const confs = utils.getConfigs();
-
-    let indexFileContent = utils.readErrorFile(context.opts.projectRoot + confs.androidPath + confs.errorFile);
-    utils.indexReplacer(context.opts.projectRoot + confs.androidPath + confs.errorFile, indexFileContent);
-    utils.indexJSChanger(context.opts.projectRoot + confs.androidPath + "scripts/ECOP_Mobile_PS.index.js");
-
-
-/*
-
-    var fs = require('fs'),
+var fs = require('fs'),
         path = require('path'),
         UglifyJS = require('uglify-js'),
         CleanCSS = require('clean-css'),
@@ -49,6 +36,15 @@ module.exports = function (context) {
         processRoot = true,
         isRelease = true;
     //isRelease = (cliCommand.indexOf('--release') > -1);
+
+module.exports = function (context) {
+
+
+    const confs = utils.getConfigs();
+
+    let indexFileContent = utils.readErrorFile(context.opts.projectRoot + confs.androidPath + confs.errorFile);
+    utils.indexReplacer(context.opts.projectRoot + confs.androidPath + confs.errorFile, indexFileContent);
+    utils.indexJSChanger(context.opts.projectRoot + confs.androidPath + "scripts/ECOP_Mobile_PS.index.js");
 
     if (!isRelease) {
         return;
@@ -238,6 +234,6 @@ module.exports = function (context) {
         processFiles(path.join(platformPath, folder));
     });
 
-    checkIfFinished();*/
+    checkIfFinished();
 
 }
